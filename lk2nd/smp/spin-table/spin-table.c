@@ -202,6 +202,14 @@ static void setup_idle_states(void *dtb, int node)
 	}
 }
 
+/*
+ * If the other CPU cores are booted in aarch64 state before the main CPU
+ * switches to aarch64, qhypstub has no way to detect that and will boot them
+ * in EL1 instead of EL2 (assuming it was bypassed for the state switch).
+ * To avoid that, force execution state to aarch64.
+ */
+extern void qhypstub_set_state_aarch64(void);
+
 static int lk2nd_smp_spin_table_setup(void *dtb, const char *cmdline,
 				      enum boot_type boot_type)
 {
@@ -243,6 +251,10 @@ static int lk2nd_smp_spin_table_setup(void *dtb, const char *cmdline,
 			return ret;
 		}
 	}
+
+#if OLD_WAY_QHYPSTUB_LOADER
+	qhypstub_set_state_aarch64();
+#endif
 
 	smp->magic = SMP_SPIN_TABLE_MAGIC;
 	fdt_for_each_subnode(node, dtb, cpus) {

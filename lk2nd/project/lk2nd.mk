@@ -6,6 +6,7 @@ include lk2nd/project/base.mk
 MODULES += \
 	lk2nd/device \
 	lk2nd/device/2nd \
+	lk2nd/hyp_old \
 
 # Use part of the "boot" partition for the lk2nd boot image. The real Android
 # boot image can be placed in the partition with 512 KiB offset.
